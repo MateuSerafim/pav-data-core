@@ -1,0 +1,11 @@
+[project]
+name = "pav-data-core"
+version = "0.1.0"
+description = "Core da aplicação pavesys ml"
+authors = [{name="Mateus Serafim", email="mateus.serafim.dev@gmail.com"}]
+dependencies = [
+    "alembic>=1.16.5",
+    "sqlalchemy>=2.0.43",
+    "python-dotenv>=1.1.1",
+    "psycopg2>=2.9.10"
+]

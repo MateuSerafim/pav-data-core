@@ -1,0 +1,4 @@
+from src.pavements_module.data_mapping.object_register import ObjectRegisterMapping
+from src.pavements_module.data_mapping.road_stretch import RoadStretchMapping
+from src.pavements_module.data_mapping.visual_register import VisualRegisterMapping
+from src.pavements_module.data_mapping.visual_survey import VisualSurveyMapping
