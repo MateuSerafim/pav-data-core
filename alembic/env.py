@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
+config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL_SYNC"))
 
 # add your model's MetaData object here
 # for 'autogenerate' support
