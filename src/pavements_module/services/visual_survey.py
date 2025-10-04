@@ -1,4 +1,4 @@
-from sqlalchemy import select, update
+from sqlalchemy import select, update, exists
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
@@ -40,7 +40,8 @@ class VisualSurveyService():
         
         query = await self.db_session.execute(
             select(VisualSurveyMapping)\
-            .options(selectinload(VisualSurveyMapping.image_registers)))
+            .options(selectinload(VisualSurveyMapping.image_registers))\
+            .where(VisualSurveyMapping.stretch_id == stretch_id))
 
         visual_surveys = query.scalars().all()
     
@@ -48,3 +49,26 @@ class VisualSurveyService():
             [vs.to_entity()\
                .load_registers([r.to_entity() for r in vs.image_registers]) \
                 for vs in visual_surveys])
+    
+    async def get_visual_survey(self, visual_id: uuid.UUID):
+        query = await self.db_session.execute(
+            select(VisualSurveyMapping)\
+            .options(selectinload(VisualSurveyMapping.image_registers))\
+            .where(VisualSurveyMapping.id == visual_id))
+        
+        visual_survey = query.scalars().first()
+        if (visual_survey is None):
+            return Result.failure("Levantamento não encontrado", ErrorCode.NOT_FOUND)
+        
+        return Result.success(visual_survey.to_entity()\
+                              .load_registers([r.to_entity() for r in visual_survey.image_registers]))
+
+    async def check_exist_visual_survey(self, visual_id: uuid.UUID) -> Result:
+        query = await self.db_session.execute(
+            select(exists().where(VisualSurveyMapping.id == visual_id)))
+        
+        road_exists = query.scalar()
+        if (not road_exists):
+            return Result.failure("Levantamento não existe!", ErrorCode.NOT_FOUND)
+        
+        return Result.success(True)

@@ -10,8 +10,17 @@ class VisualSurvey():
         self.road_stretch_id = road_stretch_id 
 
         self.road_stretch = None
-        self.registers = None
+        self.registers = []
     
     def load_registers(self, registers):
         self.registers = registers
         return self
+    
+    def registers_status(self) -> int:
+        status_list = [r.status for r in self.registers]
+        if 2 in status_list:
+            return 2
+        if 0 in status_list:
+            return 0
+        return 1
+        

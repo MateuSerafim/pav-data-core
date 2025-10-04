@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy import UUID, String, Float
+from sqlalchemy import UUID, String, Float, Integer
 from sqlalchemy.orm import relationship
 import uuid
 from ...utils.base_entity import BaseEntity
@@ -13,6 +13,8 @@ class VisualRegisterMapping(BaseEntity):
     lat = Column(Float(), nullable=True)
     long = Column(Float(), nullable=True)
 
+    process_status = Column(Integer, nullable=False, default=0)
+
     survey_id = Column(UUID(as_uuid=True), ForeignKey("visual_surveys.id"))
     visual_survey = relationship("VisualSurveyMapping", back_populates="image_registers")
 
@@ -21,5 +23,14 @@ class VisualRegisterMapping(BaseEntity):
                            cascade="all, delete-orphan")
 
     def to_entity(self) -> VisualRegister:
-        return VisualRegister(self.id, self.image_url, self.lat, self.long, self.survey_id)
-
+        return VisualRegister(self.id, self.image_url, self.lat, 
+                              self.long, self.process_status, self.survey_id)
+    
+    @staticmethod
+    def create(id: uuid.UUID, image_url: str, 
+               lat:float, long:float, process_status: int, 
+               survey_id: uuid.UUID):
+        return VisualRegisterMapping(id=id, image_url=image_url, 
+                                     lat=lat, long=long, 
+                                     process_status = process_status, 
+                                     survey_id=survey_id)
