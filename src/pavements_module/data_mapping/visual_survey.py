@@ -18,7 +18,9 @@ class VisualSurveyMapping(BaseEntity):
     stretch_id = Column(UUID(as_uuid=True), ForeignKey("road_stretchs.id"))
     stretch = relationship("RoadStretchMapping", back_populates="surveys")
 
-    image_registers = relationship("VisualRegisterMapping", back_populates="visual_survey")
+    image_registers = relationship("VisualRegisterMapping", 
+                                   back_populates="visual_survey", 
+                                   cascade="all, delete-orphan")
 
     def to_entity(self) -> VisualSurvey:
         return VisualSurvey(self.id, self.suyvey_date, self.is_open, self.stretch_id)

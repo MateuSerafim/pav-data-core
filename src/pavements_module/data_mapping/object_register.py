@@ -23,7 +23,8 @@ class ObjectRegisterMapping(BaseEntity):
 
     visual_register_id = Column(UUID(as_uuid=True), ForeignKey("visual_registers.id"))
 
-    visual_register = relationship("VisualRegisterMapping", back_populates="objects")
+    visual_register = relationship("VisualRegisterMapping", 
+                                   back_populates="objects")
 
     def to_entity(self) -> ObjectRegister:
         return ObjectRegister(self.id, self.class_type, 

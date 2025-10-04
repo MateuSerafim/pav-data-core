@@ -18,7 +18,7 @@ class Result:
         return not self.is_success()
     
     @staticmethod
-    def success(value):
+    def success(value = True):
         return Result(value, None, None)
     
     @staticmethod

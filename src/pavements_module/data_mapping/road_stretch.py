@@ -19,7 +19,9 @@ class RoadStretchMapping(BaseEntity):
     lat_final = Column(Float, nullable=True)
     long_final = Column(Float, nullable=True)
 
-    surveys = relationship("VisualSurveyMapping", back_populates="stretch")
+    surveys = relationship("VisualSurveyMapping", 
+                           back_populates="stretch", 
+                           cascade="all, delete-orphan")
 
     def to_entity(self) -> RoadStretch:
         return RoadStretch(self.id, self.code, 
