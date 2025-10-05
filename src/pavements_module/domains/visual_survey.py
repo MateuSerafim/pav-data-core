@@ -17,7 +17,7 @@ class VisualSurvey():
         return self
     
     def registers_status(self) -> int:
-        status_list = [r.status for r in self.registers]
+        status_list = [r.process_status for r in self.registers]
         if 2 in status_list:
             return 2
         if 0 in status_list:
