@@ -31,3 +31,11 @@ class ObjectRegisterMapping(BaseEntity):
                               self.confidence, 
                               self.coord_x1, self.coord_y1, 
                               self.coord_x2, self.coord_y2)
+    
+    @staticmethod
+    def create(class_type:int, confidence:float, 
+               positions:list, visual_register_id: uuid.UUID):
+        return ObjectRegisterMapping(id=uuid.uuid4(), class_type=class_type, 
+                                     confidence=confidence, coord_x1=positions[0],
+                                     coord_y1 = positions[1], coord_x2 = positions[2],
+                                     coord_y2 = positions[3], visual_register_id=visual_register_id)
