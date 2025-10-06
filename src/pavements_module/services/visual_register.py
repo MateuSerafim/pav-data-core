@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 from ..data_mapping.visual_register import VisualRegisterMapping
 from ...utils.result import Result, ErrorCode
+from ..domains.visual_register import VisualRegister
 
 class VisualRegisterService():
     def __init__(self, session: AsyncSession, visual_survey_service):
@@ -21,7 +22,7 @@ class VisualRegisterService():
             return Result.failure("Registro não encontrado!", ErrorCode.NOT_FOUND)
         
         return Result.success(visual_survey.to_entity()\
-                              .load_registers([r.to_entity() for r in visual_survey.image_registers]))
+                              .load_objects_registers([r.to_entity() for r in visual_survey.objects]))
 
     async def add_visual_register(self, new_register: VisualRegisterMapping):
         survey_exists_result = await self.visual_survey_service\
@@ -38,4 +39,18 @@ class VisualRegisterService():
         except Exception as e:
             await self.db_session.rollback()
             return Result.failure(e.args, ErrorCode.CRITICAL_ERROR)
+        
+    async def update_visual_register(self, register: VisualRegister):
+        try:
+            entity = await self.db_session.get(VisualRegisterMapping, register.id)
+            if (not entity):
+                return Result.failure("Entidade não encontrada!", ErrorCode.NOT_FOUND)
+            entity.image_url = register.image_url
+            entity.lat = register.lat
+            entity.long = register.long
+            entity.process_status = register.process_status
+            await self.db_session.commit()
+        except Exception as ex:
+            await self.db_session.rollback()
+            return Result.failure(str(ex))
     
