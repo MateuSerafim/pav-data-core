@@ -13,6 +13,6 @@ class ImageReader():
         try:
             nparr = np.frombuffer(blob_data, np.uint8)
             img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            return ImageReader(img, image_id)
+            return Result.success(ImageReader(img, image_id))
         except Exception as e:
             return Result.failure(f"Erro ao ler a imagem: {str(e)}!")
