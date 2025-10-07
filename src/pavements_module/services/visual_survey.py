@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
 
 from ..data_mapping.visual_survey import VisualSurveyMapping
+from ..data_mapping.visual_register import VisualRegisterMapping
 from ..services.road_stretch import RoadStretchService
 from ...utils.result import Result, ErrorCode
 
@@ -53,7 +54,8 @@ class VisualSurveyService():
     async def get_visual_survey(self, visual_id: uuid.UUID):
         query = await self.db_session.execute(
             select(VisualSurveyMapping)\
-            .options(selectinload(VisualSurveyMapping.image_registers))\
+            .options(selectinload(VisualSurveyMapping.image_registers)\
+                    .selectinload(VisualRegisterMapping.objects))\
             .where(VisualSurveyMapping.id == visual_id))
         
         visual_survey = query.scalars().first()
@@ -61,7 +63,9 @@ class VisualSurveyService():
             return Result.failure("Levantamento não encontrado", ErrorCode.NOT_FOUND)
         
         return Result.success(visual_survey.to_entity()\
-                              .load_registers([r.to_entity() for r in visual_survey.image_registers]))
+                              .load_registers([r.to_entity()\
+                                               .load_objects_registers([o.to_entity() for o in r.objects])\
+                                for r in visual_survey.image_registers]))
 
     async def check_exist_visual_survey(self, visual_id: uuid.UUID) -> Result:
         query = await self.db_session.execute(

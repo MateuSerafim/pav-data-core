@@ -11,18 +11,30 @@ class VisualRegisterService():
         self.db_session = session
         self.visual_survey_service = visual_survey_service
 
+    async def get_visual_registers(self, survey_id: uuid.UUID):
+        query = await self.db_session.execute(
+            select(VisualRegisterMapping)\
+            .options(selectinload(VisualRegisterMapping.objects))\
+            .where(VisualRegisterMapping.survey_id == survey_id))
+        
+        registers = query.scalars().all()
+
+        return Result.success([vr.to_entity()\
+                              .load_objects_registers([r.to_entity() for r in vr.objects]) 
+                              for vr in registers])
+
     async def get_visual_register(self, visual_id: uuid.UUID):
         query = await self.db_session.execute(
             select(VisualRegisterMapping)\
             .options(selectinload(VisualRegisterMapping.objects))\
             .where(VisualRegisterMapping.id == visual_id))
         
-        visual_survey = query.scalars().first()
-        if (visual_survey is None):
+        visual_register = query.scalars().first()
+        if (visual_register is None):
             return Result.failure("Registro não encontrado!", ErrorCode.NOT_FOUND)
         
-        return Result.success(visual_survey.to_entity()\
-                              .load_objects_registers([r.to_entity() for r in visual_survey.objects]))
+        return Result.success(visual_register.to_entity()\
+                              .load_objects_registers([r.to_entity() for r in visual_register.objects]))
 
     async def add_visual_register(self, new_register: VisualRegisterMapping):
         survey_exists_result = await self.visual_survey_service\

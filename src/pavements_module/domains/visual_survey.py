@@ -23,4 +23,9 @@ class VisualSurvey():
         if 0 in status_list:
             return 0
         return 1
-        
+    
+    def quant_item_by_class(self, item_class) -> int:
+        q = 0
+        for r in self.registers:
+            q += r.quant_item_by_class(item_class)
+        return q

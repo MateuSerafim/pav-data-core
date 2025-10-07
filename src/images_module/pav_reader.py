@@ -8,6 +8,9 @@ class ImageReader():
         self.image_data = image_data
         self.image_id = image_id
 
+    def draw_rectangule(self, x_1, y_1, x_2, y_2, color) -> None:
+        cv2.rectangle(self.image_data, (x_1, y_1), (x_2, y_2), color, 2)
+
     @staticmethod
     def read_from_blob_data(blob_data, image_id) -> Result:
         try:

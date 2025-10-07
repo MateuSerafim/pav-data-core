@@ -7,8 +7,11 @@ class VisualRegister():
         self.process_status = process_status
         self.visual_survey_id = survey_id
 
-        self.objects = None
+        self.objects = []
 
     def load_objects_registers(self, registers):
         self.objects = registers
         return self
+    
+    def quant_item_by_class(self, item_class) -> int:
+        return len([o for o in self.objects if o.class_type.value == item_class])

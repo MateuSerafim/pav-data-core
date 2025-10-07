@@ -17,3 +17,14 @@ class ObjectRegister():
         self.confidence: float = confidence
         self.position: list = [[coord_x1, coord_y1], 
                                [coord_x2, coord_y2]]
+        
+    def get_color(self):
+        match self.class_type.value:
+            case 1:
+                return (0, 0, 255) # vermerlho
+            case 2:
+                return (255, 0, 0) # azul
+            case 3:
+                return (0, 255, 0) #verde
+            case _:
+                return (0, 255, 255)

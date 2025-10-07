@@ -26,6 +26,7 @@ class VisualRegisterMapping(BaseEntity):
         return VisualRegister(self.id, self.image_url, self.lat, 
                               self.long, self.process_status, self.survey_id)
     
+    
     @staticmethod
     def create(id: uuid.UUID, image_url: str, 
                lat:float, long:float, process_status: int, 
